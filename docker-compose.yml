@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+        rabbit:
+                image: rabbitmq:latest
+        fastapi:
+                image: celery_task_executor:latest
+                ports:
+                        - "8080:8080"
+                entrypoint: uvicorn app:app --host 0.0.0.0 --port 8080
+        worker:
+                image: celery_task_executor:latest
+                entrypoint: celery -A worker.celery_app worker -c 2 --loglevel=info
+        worker2:
+                image: celery_task_executor:latest
+                entrypoint: celery -A worker.celery_app worker -c 2 --loglevel=info
